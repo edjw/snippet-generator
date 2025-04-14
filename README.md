@@ -1,6 +1,6 @@
-# CMS Snippet Vite
+# CMS Snippet Generator
 
-This project uses Vite to bundle TypeScript and CSS into a single, self-contained HTML snippet (`inline-snippet.html`). This snippet contains all necessary CSS and JavaScript inline, making it easy to embed directly into Content Management Systems (CMS) or other platforms where external file references might be difficult or undesirable.
+This project uses Vite to bundle TypeScript and CSS into a single, self-contained HTML snippet (`inline-snippet.html`). This snippet contains all necessary CSS and JavaScript inline, making it easy to embed directly into Content Management Systems (CMS) or other platforms where external file references might be difficult or undesirable. It also includes an optional feature to automatically upload the generated snippet to a GitHub Gist for easy sharing and versioning.
 
 ## Installation
 
@@ -16,6 +16,65 @@ This project uses Vite to bundle TypeScript and CSS into a single, self-containe
 - **`pnpm dev`**: Starts the Vite development server for local development and testing with hot module replacement.
 - **`pnpm build`**: Compiles the TypeScript code, bundles the application using Vite, and runs the custom plugin to generate the final `dist/inline-snippet.html`.
 - **`pnpm preview`**: Serves the production build locally to preview the final output.
+- **`pnpm upload-gist`**: Uploads the built `dist/inline-snippet.html` to a GitHub Gist (requires setup, see below).
+
+## GitHub Gist Upload (Optional)
+
+This project includes a script to upload the generated `dist/inline-snippet.html` to a GitHub Gist. This can be useful for sharing the snippet or keeping a version history.
+
+### Setup
+
+1.  **Generate GitHub Token:**
+
+    - You need a GitHub Fine-Grained token with 'gist' account permissions
+    - Generate one here: https://github.com/settings/personal-access-tokens/new
+
+    - Copy the generated token immediately – you won't be able to see it again.
+
+2.  **Create `.env` File:**
+
+    - Create a file named `.env` in the project root directory.
+    - Add the following line, replacing `YOUR_TOKEN_HERE` with the token you just generated:
+      ```
+      GITHUB_GIST_TOKEN=YOUR_TOKEN_HERE
+      ```
+    - The `.env` file is already listed in `.gitignore` to prevent accidental commits.
+
+3.  **Configure `gist-config.json`:**
+    - A `gist-config.json` file exists in the project root. It controls the upload behavior:
+      ```json
+      {
+        "gistId": null, // Will be auto-filled after the first successful upload
+        "description": "Snippet Build Output", // Description for the Gist (optional)
+        "public": false, // Set to true to create a public Gist
+        "uploadFiles": [
+          // Array defining files to upload
+          {
+            // Explicitly defines the filename to use within the Gist
+            "gistFilename": "snippet.html",
+            // Path to the local file to upload
+            "sourcePath": "dist/inline-snippet.html"
+          }
+          // You could add more file objects here if needed
+        ]
+      }
+      ```
+    - You typically don't need to change `gistId` (it's managed by the script).
+    - You might need to adjust `description`, `public`, or the contents of the `uploadFiles` array (e.g., if you change the build output path in `vite.config.ts` or want to change the filename used in the Gist).
+    - This file is also in `.gitignore` as the `gistId` is specific to your Gist.
+
+### Usage
+
+1.  Build the project:
+    ```bash
+    pnpm build
+    ```
+2.  Run the upload script:
+    ```bash
+    pnpm upload-gist
+    ```
+    - The first time you run this, it will create a new Gist and save its ID to `gist-config.json`.
+    - Subsequent runs will update the _same_ Gist with the latest build output.
 
 ## Build Output
 

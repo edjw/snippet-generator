@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Gist Configuration",
+  "description": "Configuration for uploading files to a GitHub Gist.",
+  "type": "object",
+  "properties": {
+    "gistId": {
+      "description": "The ID of the GitHub Gist. Should be a 32-character hexadecimal string.",
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "description": {
+      "description": "A description for the Gist.",
+      "type": "string"
+    },
+    "public": {
+      "description": "Whether the Gist should be public or private.",
+      "type": "boolean",
+      "default": false
+    },
+    "uploadFiles": {
+      "description": "An array of files to upload to the Gist.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "gistFilename": {
+            "description": "The desired filename within the Gist. This is also used as the display name for the file in the Gist.",
+            "type": "string"
+          },
+          "sourcePath": {
+            "description": "The local path to the source file.",
+            "type": "string"
+          }
+        },
+        "required": ["gistFilename", "sourcePath"]
+      }
+    }
+  },
+  "required": ["gistId", "uploadFiles"]
+}

@@ -1,0 +1,11 @@
+{
+  "gistId": "",
+  "description": "",
+  "public": false,
+  "uploadFiles": [
+    {
+      "gistFilename": "snippet.html",
+      "sourcePath": "dist/inline-snippet.html"
+    }
+  ]
+}
