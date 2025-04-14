@@ -40,11 +40,24 @@ This project includes a script to upload the generated `dist/inline-snippet.html
       ```
     - The `.env` file is already listed in `.gitignore` to prevent accidental commits.
 
-3.  **Configure `gist-config.json`:**
+3.  **Create `gist-config.json`:**
+
+    - Copy the example configuration file:
+      ```bash
+      cp gist-config.json.example gist-config.json
+      ```
+    - Edit the newly created `gist-config.json` and fill in the required details:
+      - `gistId`: Leave this as `""` or `null`. The upload script will automatically populate it after the first successful upload. If you already have a Gist you want to update, you can paste its ID here.
+      - `description`: Provide a meaningful description for your Gist (e.g., "My CMS Snippet").
+      - `public`: Set to `true` if you want the Gist to be publicly accessible, `false` for a secret Gist.
+      - `uploadFiles`: Verify that the `sourcePath` points to the correct build output (usually `dist/inline-snippet.html`) and `gistFilename` is the desired name for the file within the Gist.
+    - This file is listed in `.gitignore` as the `gistId` and potentially other details are specific to your Gist.
+
+4.  **Understanding `gist-config.json`:**
     - A `gist-config.json` file exists in the project root. It controls the upload behavior:
       ```json
       {
-        "gistId": null, // Will be auto-filled after the first successful upload
+        "gistId": "", // Will be auto-filled after the first successful upload, or set manually
         "description": "Snippet Build Output", // Description for the Gist (optional)
         "public": false, // Set to true to create a public Gist
         "uploadFiles": [
@@ -59,9 +72,7 @@ This project includes a script to upload the generated `dist/inline-snippet.html
         ]
       }
       ```
-    - You typically don't need to change `gistId` (it's managed by the script).
-    - You might need to adjust `description`, `public`, or the contents of the `uploadFiles` array (e.g., if you change the build output path in `vite.config.ts` or want to change the filename used in the Gist).
-    - This file is also in `.gitignore` as the `gistId` is specific to your Gist.
+    - The upload script (`pnpm upload-gist`) uses this configuration to determine which Gist to update (or create), its description, visibility, and which local files map to which filenames within the Gist.
 
 ### Usage
 
