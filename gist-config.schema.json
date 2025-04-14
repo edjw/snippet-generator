@@ -5,7 +5,7 @@
   "type": "object",
   "properties": {
     "gistId": {
-      "description": "The ID of the GitHub Gist. Should be a 32-character hexadecimal string.",
+      "description": "The ID of the GitHub Gist. Should be a 32-character hexadecimal string. Can be left blank or null to automatically populate it after the first successful upload.",
       "type": "string",
       "pattern": "^[a-f0-9]{32}$"
     },

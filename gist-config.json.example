@@ -4,7 +4,7 @@
   "public": false,
   "uploadFiles": [
     {
-      "gistFilename": "snippet.html",
+      "gistFilename": "demo-snippet.html",
       "sourcePath": "dist/inline-snippet.html"
     }
   ]
