@@ -1,4 +1,4 @@
-# CMS Snippet Generator
+# Snippet Generator
 
 This project uses Vite to bundle TypeScript and CSS into a single, self-contained HTML snippet (`inline-snippet.html`). This snippet contains all necessary CSS and JavaScript inline, making it easy to embed directly into Content Management Systems (CMS) or other platforms where external file references might be difficult or undesirable. It also includes an optional feature to automatically upload the generated snippet to a GitHub Gist for easy sharing and versioning.
 
