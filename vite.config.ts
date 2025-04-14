@@ -1,10 +1,11 @@
-import { defineConfig, PluginOption } from "vite";
+import { defineConfig, PluginOption, ResolvedConfig } from "vite";
 import { resolve } from "path";
-import { readFile, writeFile, mkdir } from "fs/promises";
+import { readFile, writeFile, mkdir, readdir } from "fs/promises";
 
 // --- Configuration ---
-const baseName = "cms-snippet";
+const baseName = "snippet";
 const outputHtmlName = "inline-snippet.html";
+const buildSeparateCSS = false;
 
 // Helper function to convert kebab-case to PascalCase
 const toPascalCase = (str: string) =>
@@ -17,31 +18,55 @@ const toPascalCase = (str: string) =>
 // Custom plugin to generate inline HTML
 const generateInlineHtmlPlugin = (): PluginOption => {
   let outDir: string;
+  let isCssSplittingEnabled: boolean;
+
   return {
     name: "generate-inline-html",
-    // Get the output directory from the resolved config
-    configResolved(resolvedConfig) {
+    // Get the output directory and cssCodeSplit setting from the resolved config
+    configResolved(resolvedConfig: ResolvedConfig) {
       outDir = resolvedConfig.build.outDir || "dist";
+      isCssSplittingEnabled = resolvedConfig.build.cssCodeSplit ?? false;
     },
     // Hook that runs after the bundle is generated
     async closeBundle() {
       try {
-        const cssPath = resolve(outDir, `${baseName}.css`);
+        let cssContent = "";
         const jsPath = resolve(outDir, `${baseName}.js`);
 
-        // Read the content of the generated CSS and JS files
-        const cssContent = await readFile(cssPath, "utf-8");
+        // Read CSS content based on cssCodeSplit setting
+        if (isCssSplittingEnabled) {
+          // Scan the output directory for CSS files
+          const files = await readdir(outDir);
+          const cssFiles = files.filter((file) => file.endsWith(".css"));
+          // Read and concatenate content from all CSS files
+          const cssPromises = cssFiles.map((file) =>
+            readFile(resolve(outDir, file), "utf-8")
+          );
+          const cssContents = await Promise.all(cssPromises);
+          cssContent = cssContents.join("\n");
+        } else {
+          // Read the single CSS file if splitting is disabled
+          const cssPath = resolve(outDir, `${baseName}.css`);
+          cssContent = await readFile(cssPath, "utf-8");
+        }
+
+        // Read the content of the generated JS file
         const jsContent = await readFile(jsPath, "utf-8");
 
-        // Create the HTML content
-        const htmlContent = `
-  <style>
-${cssContent}
-  </style>
+        // Check if there is actual CSS content (trim whitespace)
+        const hasCssContent = cssContent.trim().length > 0;
 
-  <script>
-${jsContent}
-  </script>`;
+        // Create the HTML content conditionally
+        let htmlContent = "";
+        if (hasCssContent) {
+          htmlContent += `<style>
+  ${cssContent}</style>
+`;
+        }
+        // Always add the script tag
+        htmlContent += `<script>
+  ${jsContent}</script>
+`;
 
         // Define the path for the new HTML file
         const htmlPath = resolve(outDir, outputHtmlName);
@@ -69,9 +94,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, "src/main.ts"),
-      name: toPascalCase(baseName), // Convert baseName to PascalCase for the library name
+      name: toPascalCase(baseName),
       formats: ["iife"],
-      fileName: () => `${baseName}.js`, // Use baseName for the JS file
+      fileName: () => `${baseName}.js`,
     },
     rollupOptions: {
       output: {
@@ -88,6 +113,6 @@ export default defineConfig({
       },
     },
 
-    cssCodeSplit: false,
+    cssCodeSplit: !buildSeparateCSS, // Enable CSS code splitting
   },
 });
