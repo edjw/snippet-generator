@@ -1,10 +1,10 @@
 /* Styles for Feature B */
 .featureBParagraph {
-  padding: 8px;
-  margin: 5px;
-  background-color: lightgoldenrodyellow;
-  border: 1px dashed orange;
-  color: darkgoldenrod;
-  font-style: italic;
-  font-family: serif;
+	padding: 8px;
+	margin: 5px;
+	background-color: lightgoldenrodyellow;
+	border: 1px dashed orange;
+	color: darkgoldenrod;
+	font-style: italic;
+	font-family: serif;
 }

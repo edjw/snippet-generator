@@ -106,7 +106,7 @@ The primary output of the build process (`pnpm build`) is:
 - **`package.json`**: Project metadata, dependencies, and scripts.
 - **`tsconfig.json`**: TypeScript compiler configuration.
 
-## Customizing the Build
+## Customising the Build
 
 You can adjust some build parameters by modifying the constants at the top of the `vite.config.ts` file:
 
@@ -128,7 +128,7 @@ const buildSeparateCSS = true; // Enable CSS code splitting
 
 ## Custom Build Logic
 
-This project utilizes a custom Vite plugin (`generate-inline-html` defined in `vite.config.ts`) that runs after the standard Vite build (`closeBundle` hook). This plugin:
+This project utilises a custom Vite plugin (`generate-inline-html` defined in `vite.config.ts`) that runs after the standard Vite build (`closeBundle` hook). This plugin:
 
 1.  Reads the generated JavaScript bundle (`dist/snippet.js`).
 2.  Reads the generated CSS. It handles both single CSS files (when `cssCodeSplit` is `false`) and multiple CSS chunks (when `cssCodeSplit` is `true` - the current setting) by concatenating them.

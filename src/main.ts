@@ -2,15 +2,18 @@ import "./style.css"; // Import global styles (if any)
 import { featureA } from "./features/featureA";
 import { featureB } from "./features/featureB";
 
-// Main function to initialize all features
+// Main function to initialise all features
 function initialise() {
-  console.log("CMS Snippet Initialising...");
+	const features = [featureA, featureB];
 
-  // Run feature setup functions
-  featureA();
-  featureB();
-
-  console.log("CMS Snippet Initialised!");
+	// Run each feature
+	for (const runFeature of features) {
+		try {
+			runFeature();
+		} catch (err) {
+			console.error("Feature failed to initialise:", err);
+		}
+	}
 }
 
 // Auto-run when the script loads

@@ -1,69 +1,61 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Gist Configuration",
-  "description": "Configuration for uploading files to a GitHub Gist.",
-  "type": "object",
-  "properties": {
-    "gistId": {
-      "description": "The ID of the GitHub Gist. Should be a 32-character hexadecimal string. Can be left blank or null to automatically populate it after the first successful upload.",
-      "anyOf": [
-        {
-          "anyOf": [
-            {
-              "type": "string",
-              "minLength": 32,
-              "maxLength": 32,
-              "format": "regex",
-              "pattern": "^[a-f0-9]{32}$"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        {
-          "const": ""
-        }
-      ]
-    },
-    "description": {
-      "description": "A description for the Gist.",
-      "type": "string"
-    },
-    "public": {
-      "description": "Whether the Gist should be public or private.",
-      "type": "boolean",
-      "default": false
-    },
-    "uploadFiles": {
-      "description": "An array of files to upload to the Gist.",
-      "minItems": 1,
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "gistFilename": {
-            "description": "The desired filename within the Gist. This is also used as the display name for the file in the Gist.",
-            "type": "string",
-            "minLength": 1
-          },
-          "sourcePath": {
-            "description": "The local path to the source file.",
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "required": [
-          "gistFilename",
-          "sourcePath"
-        ]
-      }
-    }
-  },
-  "required": [
-    "gistId",
-    "description",
-    "public",
-    "uploadFiles"
-  ]
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Gist Configuration",
+	"description": "Configuration for uploading files to a GitHub Gist.",
+	"type": "object",
+	"properties": {
+		"gistId": {
+			"description": "The ID of the GitHub Gist. Should be a 32-character hexadecimal string. Can be left blank or null to automatically populate it after the first successful upload.",
+			"anyOf": [
+				{
+					"anyOf": [
+						{
+							"type": "string",
+							"minLength": 32,
+							"maxLength": 32,
+							"format": "regex",
+							"pattern": "^[a-f0-9]{32}$"
+						},
+						{
+							"type": "null"
+						}
+					]
+				},
+				{
+					"const": ""
+				}
+			]
+		},
+		"description": {
+			"description": "A description for the Gist.",
+			"type": "string"
+		},
+		"public": {
+			"description": "Whether the Gist should be public or private.",
+			"type": "boolean",
+			"default": false
+		},
+		"uploadFiles": {
+			"description": "An array of files to upload to the Gist.",
+			"minItems": 1,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"gistFilename": {
+						"description": "The desired filename within the Gist. This is also used as the display name for the file in the Gist.",
+						"type": "string",
+						"minLength": 1
+					},
+					"sourcePath": {
+						"description": "The local path to the source file.",
+						"type": "string",
+						"minLength": 1
+					}
+				},
+				"required": ["gistFilename", "sourcePath"]
+			}
+		}
+	},
+	"required": ["gistId", "description", "public", "uploadFiles"]
 }

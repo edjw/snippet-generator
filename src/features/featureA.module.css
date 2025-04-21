@@ -1,9 +1,9 @@
 /* Styles for Feature A */
 .featureAElement {
-  padding: 50px;
-  margin: 5px;
-  background-color: lightblue;
-  border: 1px solid blue;
-  color: navy;
-  font-family: sans-serif;
+	padding: 50px;
+	margin: 5px;
+	background-color: lightblue;
+	border: 1px solid blue;
+	color: navy;
+	font-family: sans-serif;
 }

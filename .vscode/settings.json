@@ -1,10 +1,8 @@
 {
-    "json.schemas": [
-        {
-            "fileMatch": [
-                "/gist-config.json"
-            ],
-            "url": "./gist-config.schema.json"
-        }
-    ]
+	"json.schemas": [
+		{
+			"fileMatch": ["/gist-config.json"],
+			"url": "./gist-config.schema.json"
+		}
+	]
 }
