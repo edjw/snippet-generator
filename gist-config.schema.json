@@ -6,8 +6,25 @@
   "properties": {
     "gistId": {
       "description": "The ID of the GitHub Gist. Should be a 32-character hexadecimal string. Can be left blank or null to automatically populate it after the first successful upload.",
-      "type": "string",
-      "pattern": "^[a-f0-9]{32}$"
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32,
+              "format": "regex",
+              "pattern": "^[a-f0-9]{32}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "const": ""
+        }
+      ]
     },
     "description": {
       "description": "A description for the Gist.",
@@ -20,22 +37,33 @@
     },
     "uploadFiles": {
       "description": "An array of files to upload to the Gist.",
+      "minItems": 1,
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
           "gistFilename": {
             "description": "The desired filename within the Gist. This is also used as the display name for the file in the Gist.",
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "sourcePath": {
             "description": "The local path to the source file.",
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           }
         },
-        "required": ["gistFilename", "sourcePath"]
+        "required": [
+          "gistFilename",
+          "sourcePath"
+        ]
       }
     }
   },
-  "required": ["gistId", "uploadFiles"]
+  "required": [
+    "gistId",
+    "description",
+    "public",
+    "uploadFiles"
+  ]
 }

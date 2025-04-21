@@ -1,23 +1,10 @@
 import { Octokit } from "octokit";
-import { Endpoints } from "@octokit/types"; // Added import
+import { Endpoints } from "@octokit/types";
 import { readFile, writeFile } from "fs/promises";
 import { resolve } from "path";
 import dotenv from "dotenv";
-
-// --- Types ---
-interface GistConfigFile {
-  gistFilename: string;
-  sourcePath: string;
-}
-
-interface GistConfig {
-  gistId: string | null;
-  description: string;
-  public: boolean;
-  uploadFiles: GistConfigFile[];
-}
-
-// --- Script ---
+import { z } from "zod";
+import { gistConfigSchema, GistConfig } from "./gistConfigSchema";
 
 dotenv.config();
 
@@ -39,14 +26,36 @@ async function uploadGist() {
     process.exit(1);
   }
 
-  // 2. Read Gist Configuration
+  // 2. Read and Validate Gist Configuration
   let config: GistConfig;
   try {
     const configFileContent = await readFile(configPath, "utf-8");
-    config = JSON.parse(configFileContent) as GistConfig;
-    console.log("Read gist-config.json successfully.");
-  } catch (error) {
-    console.error(`Error reading or parsing ${configPath}:`, error);
+    const rawConfig = JSON.parse(configFileContent);
+
+    // Validate with Zod
+    const validationResult = gistConfigSchema.safeParse(rawConfig);
+
+    if (!validationResult.success) {
+      console.error(`Error validating ${configPath}:`);
+      // Log formatted errors using the recommended Zod v4 function
+      console.error(
+        JSON.stringify(z.treeifyError(validationResult.error), null, 2) // Use treeifyError
+      );
+      process.exit(1);
+    }
+
+    config = validationResult.data;
+
+    // Treat empty string gistId as null for logic consistency
+    if (config.gistId === "") {
+      config.gistId = null;
+    }
+  } catch (error: any) {
+    if (error instanceof SyntaxError) {
+      console.error(`Error parsing JSON in ${configPath}:`, error.message);
+    } else {
+      console.error(`Error reading ${configPath}:`, error);
+    }
     process.exit(1);
   }
 
@@ -56,13 +65,10 @@ async function uploadGist() {
     // Iterate over the uploadFiles array
     for (const fileInfo of config.uploadFiles) {
       const sourcePath = resolve(process.cwd(), fileInfo.sourcePath);
-      console.log(`Reading content from: ${sourcePath}`);
+
       const content = await readFile(sourcePath, "utf-8");
       // Use gistFilename as the key for the API payload
       filesToUpload[fileInfo.gistFilename] = { content };
-      console.log(
-        `Prepared ${fileInfo.gistFilename} for upload from ${fileInfo.sourcePath}.`
-      );
     }
   } catch (error) {
     console.error("Error reading source file content:", error);
@@ -79,7 +85,7 @@ async function uploadGist() {
   // 4. Initialize Octokit
   const octokit = new Octokit({ auth: token });
 
-  // Define response types using Endpoints helper
+  // Define response types using Endpoints helper (no change needed here)
   type UpdateGistResponse = Endpoints["PATCH /gists/{gist_id}"]["response"];
   type CreateGistResponse = Endpoints["POST /gists"]["response"];
 
@@ -88,8 +94,6 @@ async function uploadGist() {
 
     // 5. Check if Gist exists and Create or Update
     if (gistId) {
-      // Update existing Gist
-      console.log(`Updating existing Gist (ID: ${gistId})...`);
       // Apply specific type to the response
       const response: UpdateGistResponse = await octokit.request(
         "PATCH /gists/{gist_id}",
@@ -123,7 +127,6 @@ async function uploadGist() {
       if (response.data.id) {
         gistId = response.data.id;
         console.log(`Gist created successfully: ${response.data.html_url}`);
-        console.log(`New Gist ID: ${gistId}`);
 
         // 6. Update config file with the new Gist ID
         config.gistId = gistId;

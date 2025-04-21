@@ -29,6 +29,9 @@ importers:
       vite:
         specifier: ^6.2.0
         version: 6.2.6(@types/node@22.14.1)(tsx@4.19.3)
+      zod:
+        specifier: 4.0.0-beta.20250420T053007
+        version: 4.0.0-beta.20250420T053007
 
 packages:
 
@@ -398,6 +401,9 @@ packages:
   '@types/node@22.14.1':
     resolution: {integrity: sha512-u0HuPQwe/dHrItgHHpmw3N2fYCR6x4ivMNbPHRkBVP4CvN+kiRrKHWk3i8tXiO/joPwXLMYvF9TTF0eqgHIuOw==}
 
+  '@zod/core@0.8.1':
+    resolution: {integrity: sha512-djj8hPhxIHcG8ptxITaw/Bout5HJZ9NyRbKr95Eilqwt9R0kvITwUQGDU+n+MVdsBIka5KwztmZSLti22F+P0A==}
+
   before-after-hook@3.0.2:
     resolution: {integrity: sha512-Nik3Sc0ncrMK4UUdXQmAnRtzmNQTAAXmXIopizwZ1W1t8QmfJj+zL4OA2I7XPTPW5z5TDqv4hRo/JzouDJnX3A==}
 
@@ -514,6 +520,9 @@ packages:
         optional: true
       yaml:
         optional: true
+
+  zod@4.0.0-beta.20250420T053007:
+    resolution: {integrity: sha512-5pp8Q0PNDaNcUptGiBE9akyioJh3RJpagIxrLtAVMR9IxwcSZiOsJD/1/98CyhItdTlI2H91MfhhLzRlU+fifA==}
 
 snapshots:
 
@@ -807,6 +816,8 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
+  '@zod/core@0.8.1': {}
+
   before-after-hook@3.0.2: {}
 
   bottleneck@2.19.5: {}
@@ -929,3 +940,7 @@ snapshots:
       '@types/node': 22.14.1
       fsevents: 2.3.3
       tsx: 4.19.3
+
+  zod@4.0.0-beta.20250420T053007:
+    dependencies:
+      '@zod/core': 0.8.1
